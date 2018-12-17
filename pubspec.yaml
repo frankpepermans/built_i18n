@@ -1,0 +1,19 @@
+name: built_i18n
+description: Builds i18n dart files from a CSV.
+version: 0.1.0
+#homepage: https://www.example.com
+author: Frank <frank@igindo.com>
+
+environment:
+  sdk: '>=2.0.0-dev.62.0 <3.0.0'
+
+dependencies:
+  http: ^0.11.0
+
+dev_dependencies:
+  csv: ^4.0.0
+  build: ^0.12.7
+  source_gen: ^0.8.3
+  build_runner: ^0.9.2
+  build_test: ^0.10.3
+  build_web_compilers: ^0.4.1
