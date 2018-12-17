@@ -35,7 +35,7 @@ class I18nGenerator extends Generator {
 
         buildData.putIfAbsent(locale, () => <List<String>>[]);
 
-        buildData[locale].add([id, toCode(id, message)]);
+        buildData[locale].add([id, toCode(id, message, locale)]);
       }
     });
 
@@ -45,7 +45,8 @@ class I18nGenerator extends Generator {
           new DartFormatter().format('''import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
-String formatDateTime(final DateTime dateTime) => new DateFormat('dd/MM/yy, HH:mm').format(dateTime);
+String formatDateTime(final DateTime dateTime, final String locale) =>
+    '\${new DateFormat.yMd(locale).format(dateTime)} \${new DateFormat('HH:mm').format(dateTime)}';
 
 final MessageLookup messages = new MessageLookup();
 
@@ -64,12 +65,12 @@ class MessageLookup extends MessageLookupByLibrary {
     return null;
   }
 
-  String toCode(String id, String trans) {
+  String toCode(String id, String trans, String locale) {
     //'bundles.title': () => Intl.message('Bundles')
     final params = new RegExp(r'\$([\w]+)').allMatches(trans).map((match) =>
         'final ${match.group(1) == 'dateTime' ? 'DateTime' : 'String'} ${match.group(1)}');
 
-    return """'$id': (${params.join(', ')}) => Intl.message('''${trans.replaceAll('dateTime', '{formatDateTime(dateTime)}')}''')""";
+    return """'$id': (${params.join(', ')}) => Intl.message('''${trans.replaceAll('dateTime', '''{formatDateTime(dateTime, '$locale')}''')}''')""";
   }
 
   const I18nGenerator();
