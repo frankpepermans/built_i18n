@@ -22,7 +22,8 @@ class I18nGenerator extends Generator {
         .pathSegments;
     final assetId = new AssetId(path.first, path.sublist(1).join('/'));
     final csv = await buildStep.readAsString(assetId);
-    final rows = const CsvToListConverter().convert(csv);
+    final rows =
+        const CsvToListConverter(fieldDelimiter: ',', eol: "\n").convert(csv);
     final locales = rows.first.sublist(1);
     final buildData = <String, List<List<String>>>{};
 
