@@ -27,8 +27,14 @@ class I18nGenerator extends Generator {
     final locales = rows.first.sublist(1);
     final buildData = <String, List<List<String>>>{};
 
+    var rowIndex = 1;
     rows.sublist(1).forEach((row) {
       final String id = row[0];
+
+      rowIndex++;
+      if (row.length - 1 > locales.length)
+        throw StateError('Message $id [$rowIndex] has ${row.length - 1} '
+            'values, but there are only ${locales.length} locales');
 
       for (int i = 1, len = row.length; i < len; i++) {
         final String locale = locales[i - 1];
