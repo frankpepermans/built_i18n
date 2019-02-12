@@ -7,6 +7,8 @@ import 'package:build/build.dart';
 import 'package:csv/csv.dart';
 
 class I18nGenerator extends Generator {
+  const I18nGenerator();
+
   @override
   FutureOr<String> generate(LibraryReader library, BuildStep buildStep) async {
     final ClassElement element = library.allElements.firstWhere(
@@ -21,7 +23,7 @@ class I18nGenerator extends Generator {
             '${element.librarySource.shortName.split('/').last.split('.dart').first}.csv')
         .pathSegments;
     final assetId = new AssetId(path.first, path.sublist(1).join('/'));
-    final csv = await buildStep.readAsString(assetId);
+    final csv = sanitizeCsv(await buildStep.readAsString(assetId));
     final rows =
         const CsvToListConverter(fieldDelimiter: ',', eol: "\n").convert(csv);
     final locales = rows.first.sublist(1);
@@ -80,5 +82,5 @@ class MessageLookup extends MessageLookupByLibrary {
     return """'$id': (${params.join(', ')}) => Intl.message('''${trans.replaceAll('dateTime', '''{formatDateTime(dateTime, '$locale')}''')}''')""";
   }
 
-  const I18nGenerator();
+  String sanitizeCsv(String csv) => csv.replaceAll(RegExp(r'(\r|\n)+'), r'\n');
 }
