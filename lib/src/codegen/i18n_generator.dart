@@ -25,7 +25,8 @@ class I18nGenerator extends Generator {
     final assetId = new AssetId(path.first, path.sublist(1).join('/'));
     final csv = sanitizeCsv(await buildStep.readAsString(assetId));
     final rows =
-        const CsvToListConverter(fieldDelimiter: ',', eol: "\n").convert(csv);
+        CsvToListConverter(fieldDelimiter: ',', eol: String.fromCharCode(13))
+            .convert(csv);
     final locales = rows.first.sublist(1);
     final buildData = <String, List<List<String>>>{};
 
@@ -82,5 +83,6 @@ class MessageLookup extends MessageLookupByLibrary {
     return """'$id': (${params.join(', ')}) => Intl.message('''${trans.replaceAll('dateTime', '''{formatDateTime(dateTime, '$locale')}''')}''')""";
   }
 
-  String sanitizeCsv(String csv) => csv.replaceAll(RegExp(r'(\r|\n)+'), r'\n');
+  String sanitizeCsv(String csv) =>
+      csv.replaceAll(RegExp(r'(\r|\n)+'), String.fromCharCode(13));
 }
