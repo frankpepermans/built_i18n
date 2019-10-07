@@ -22,7 +22,7 @@ class I18nGenerator extends Generator {
         .resolve(
             '${element.librarySource.shortName.split('/').last.split('.dart').first}.csv')
         .pathSegments;
-    final assetId = new AssetId(path.first, path.sublist(1).join('/'));
+    final assetId = new AssetId(path.first, 'lib/${path.sublist(1).join('/')}');
     final csv = sanitizeCsv(await buildStep.readAsString(assetId));
     final rows =
         CsvToListConverter(fieldDelimiter: ',', eol: String.fromCharCode(13))
